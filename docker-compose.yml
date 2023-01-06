@@ -5,6 +5,7 @@ services:
     build: .
     container_name: setoko_app
     restart: unless-stopped
+    command: npm run start:dev
     ports:
       - 3000:3000
     networks:
