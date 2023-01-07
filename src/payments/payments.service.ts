@@ -14,19 +14,19 @@ export class PaymentsService {
     return this.paymentRepository.save(newPayment);
   }
 
-  findAll() {
+  find() {
     return `This action returns all payments`;
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} payment`;
+    return this.paymentRepository.findOneById(id);
   }
 
-  update(id: number, updatePaymentDto: UpdatePaymentDto) {
-    return `This action updates a #${id} payment`;
+  async update(id: number, updatePaymentDto: UpdatePaymentDto) {
+    return this.paymentRepository.update(id, updatePaymentDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} payment`;
+    return this.paymentRepository.delete(id);
   }
 }
