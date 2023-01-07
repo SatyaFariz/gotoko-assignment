@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
+import { FindPaymentsQueryParamsDto } from './dto/find-payments-query-params.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Payment } from './entities/payment.entity';
 import { Repository } from 'typeorm';
@@ -14,8 +15,21 @@ export class PaymentsService {
     return this.paymentRepository.save(newPayment);
   }
 
-  find() {
-    return `This action returns all payments`;
+  async find(query: FindPaymentsQueryParamsDto) {
+    const { skip, limit } = query;
+    const [payments, total] = await this.paymentRepository.findAndCount({
+      skip,
+      take: limit
+    });
+
+    return {
+      payments,
+      meta: {
+        total,
+        skip,
+        limit
+      }
+    };
   }
 
   findOne(id: number) {

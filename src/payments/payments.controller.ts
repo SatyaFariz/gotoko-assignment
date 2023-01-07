@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, Query } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
+import { FindPaymentsQueryParamsDto } from './dto/find-payments-query-params.dto';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 
@@ -13,8 +14,8 @@ export class PaymentsController {
   }
 
   @Get()
-  find() {
-    return this.paymentsService.find();
+  find(@Query() query: FindPaymentsQueryParamsDto) {
+    return this.paymentsService.find(query);
   }
 
   @Get(':id')
