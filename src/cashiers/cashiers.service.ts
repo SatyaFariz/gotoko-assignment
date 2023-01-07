@@ -38,7 +38,7 @@ export class CashiersService {
 
   async update(id: number, updateCashierDto: UpdateCashierDto) {
     const cashier = await this.findOne(id);
-    return this.cashierRepository.save({ cashierId: cashier.cashierId, ...updateCashierDto });
+    return this.cashierRepository.save({ ...cashier, ...updateCashierDto });
   }
 
   remove(id: number) {
