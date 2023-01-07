@@ -4,13 +4,13 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { dataSourceOptions } from 'db/data-source';
-import { CategoryModule } from './category/category.module';
 import { ProductsModule } from './products/products.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(dataSourceOptions), 
-    UserModule, CategoryModule, ProductsModule
+    UserModule, ProductsModule, CategoriesModule
   ],
   controllers: [AppController],
   providers: [AppService],
