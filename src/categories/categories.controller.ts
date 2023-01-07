@@ -13,8 +13,8 @@ export class CategoriesController {
   }
 
   @Get()
-  findAll() {
-    return this.categoriesService.findAll();
+  find() {
+    return this.categoriesService.find();
   }
 
   @Get(':id')

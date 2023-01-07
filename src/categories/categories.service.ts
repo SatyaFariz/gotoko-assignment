@@ -14,8 +14,11 @@ export class CategoriesService {
     return this.categoryRepository.save(newCategory);
   }
 
-  findAll() {
-    return `This action returns all categories`;
+  find() {
+    return this.categoryRepository.find({
+      skip: 1,
+      take: 1
+    });
   }
 
   findOne(id: number) {
@@ -28,6 +31,6 @@ export class CategoriesService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} category`;
+    return this.categoryRepository.delete(id);
   }
 }
