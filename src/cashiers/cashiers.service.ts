@@ -15,7 +15,7 @@ export class CashiersService {
     return this.cashierRepository.save(newCashier);
   }
 
-  async find(query: FindCashiersQueryParamsDto) {
+  async find(query: FindCashiersQueryParamsDto) {console.log(query)
     const { skip, limit } = query;
     const [cashiers, total] = await this.cashierRepository.findAndCount({
       skip,
