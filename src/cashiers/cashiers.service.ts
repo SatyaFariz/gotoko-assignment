@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateCashierDto } from './dto/create-cashier.dto';
 import { UpdateCashierDto } from './dto/update-cashier.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FindCashiersQueryParamsDto } from './dto/find-cashiers-query-params.dto';
 import { Cashier } from './entities/cashier.entity';
 import { Repository } from 'typeorm';
 
@@ -14,8 +15,21 @@ export class CashiersService {
     return this.cashierRepository.save(newCashier);
   }
 
-  findAll() {
-    return `This action returns all cashiers`;
+  async find(query: FindCashiersQueryParamsDto) {
+    const { skip, limit } = query;
+    const [cashiers, total] = await this.cashierRepository.findAndCount({
+      skip,
+      take: limit
+    });
+
+    return {
+      cashiers,
+      meta: {
+        total,
+        skip,
+        limit
+      }
+    };
   }
 
   findOne(id: number) {

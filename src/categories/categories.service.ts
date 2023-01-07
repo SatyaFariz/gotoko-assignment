@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { FindCategoryQueryParamsDto } from './dto/find-category-query-params.dto';
+import { FindCategoriesQueryParamsDto } from './dto/find-categories-query-params.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 import { Repository } from 'typeorm';
@@ -15,7 +15,7 @@ export class CategoriesService {
     return this.categoryRepository.save(newCategory);
   }
 
-  async find(query: FindCategoryQueryParamsDto) {
+  async find(query: FindCategoriesQueryParamsDto) {
     const { skip, limit } = query;
     const [categories, total] = await this.categoryRepository.findAndCount({
       skip,

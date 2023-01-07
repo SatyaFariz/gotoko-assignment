@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, Query } from '@nestjs/common';
 import { CashiersService } from './cashiers.service';
 import { CreateCashierDto } from './dto/create-cashier.dto';
 import { UpdateCashierDto } from './dto/update-cashier.dto';
+import { FindCashiersQueryParamsDto } from './dto/find-cashiers-query-params.dto';
 
 @Controller('cashiers')
 export class CashiersController {
@@ -13,8 +14,8 @@ export class CashiersController {
   }
 
   @Get()
-  findAll() {
-    return this.cashiersService.findAll();
+  find(@Query() query: FindCashiersQueryParamsDto) {
+    return this.cashiersService.find(query);
   }
 
   @Get(':id')
