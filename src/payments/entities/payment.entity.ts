@@ -15,7 +15,7 @@ export class Payment {
   logo: string
 
   @Column({
-    type: "enum",
+    type: 'enum',
     enum: ['CASH', 'E-WALLET', 'EDC']
   })
   type: PaymentType
