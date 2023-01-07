@@ -9,12 +9,12 @@ export class Cashier {
   @Column()
   name: string
 
-  @Column({ length: 6 })
+  @Column({ length: 6, select: false })
   passcode: string
 
-  @CreateDateColumn()
+  @CreateDateColumn({ select: false })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ select: false })
   updatedAt: Date;
 }

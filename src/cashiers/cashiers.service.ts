@@ -7,11 +7,11 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class CashiersService {
-  constructor(@InjectRepository(Cashier) private categoryRepository: Repository<Cashier>) {}
+  constructor(@InjectRepository(Cashier) private cashierRepository: Repository<Cashier>) {}
   
   create(createCashierDto: CreateCashierDto) {
-    const newCashier = this.categoryRepository.create(createCashierDto);
-    return this.categoryRepository.save(newCashier);
+    const newCashier = this.cashierRepository.create(createCashierDto);
+    return this.cashierRepository.save(newCashier);
   }
 
   findAll() {
@@ -19,14 +19,15 @@ export class CashiersService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} cashier`;
+    return this.cashierRepository.findOneById(id);
   }
 
-  update(id: number, updateCashierDto: UpdateCashierDto) {
-    return `This action updates a #${id} cashier`;
+  async update(id: number, updateCashierDto: UpdateCashierDto) {
+    const cashier = await this.findOne(id);
+    return this.cashierRepository.save({ cashierId: cashier.cashierId, ...updateCashierDto });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} cashier`;
+    return this.cashierRepository.delete(id);
   }
 }
