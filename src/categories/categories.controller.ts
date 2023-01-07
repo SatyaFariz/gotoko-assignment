@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, Query } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { FindCategoryQueryParamsDto } from './dto/find-category-query-params.dto';
 
 @Controller('categories')
 export class CategoriesController {
@@ -13,8 +14,8 @@ export class CategoriesController {
   }
 
   @Get()
-  find() {
-    return this.categoriesService.find();
+  find(@Query() query: FindCategoryQueryParamsDto) {
+    return this.categoriesService.find(query);
   }
 
   @Get(':id')
