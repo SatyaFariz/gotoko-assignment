@@ -1,11 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCashierDto } from './dto/create-cashier.dto';
 import { UpdateCashierDto } from './dto/update-cashier.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Cashier } from './entities/cashier.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class CashiersService {
+  constructor(@InjectRepository(Cashier) private categoryRepository: Repository<Cashier>) {}
+  
   create(createCashierDto: CreateCashierDto) {
-    return 'This action adds a new cashier';
+    const newCashier = this.categoryRepository.create(createCashierDto);
+    return this.categoryRepository.save(newCashier);
   }
 
   findAll() {
