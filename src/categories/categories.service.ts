@@ -15,11 +15,21 @@ export class CategoriesService {
     return this.categoryRepository.save(newCategory);
   }
 
-  find(query: FindCategoryQueryParamsDto) {
-    return this.categoryRepository.find({
-      skip: query.skip,
-      take: query.limit
+  async find(query: FindCategoryQueryParamsDto) {
+    const { skip, limit } = query;
+    const [categories, total] = await this.categoryRepository.findAndCount({
+      skip,
+      take: limit
     });
+
+    return {
+      categories,
+      meta: {
+        total,
+        skip,
+        limit
+      }
+    };
   }
 
   findOne(id: number) {
@@ -28,7 +38,7 @@ export class CategoriesService {
 
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
     const category = await this.findOne(id);
-    return this.categoryRepository.save({ id: category.id, ...updateCategoryDto });
+    return this.categoryRepository.save({ categoryId: category.categoryId, ...updateCategoryDto });
   }
 
   remove(id: number) {
