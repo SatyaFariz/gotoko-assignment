@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, Query, ParseIntPipe } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { FindPaymentsQueryParamsDto } from './dto/find-payments-query-params.dto';
 import { CreatePaymentDto } from './dto/create-payment.dto';
@@ -19,17 +19,17 @@ export class PaymentsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.paymentsService.findOne(id);
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() updatePaymentDto: UpdatePaymentDto) {
+  update(@Param('id', ParseIntPipe) id: number, @Body() updatePaymentDto: UpdatePaymentDto) {
     return this.paymentsService.update(id, updatePaymentDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.paymentsService.remove(id);
   }
 }

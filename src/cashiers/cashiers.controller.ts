@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, Query, ParseIntPipe } from '@nestjs/common';
 import { CashiersService } from './cashiers.service';
 import { CreateCashierDto } from './dto/create-cashier.dto';
 import { UpdateCashierDto } from './dto/update-cashier.dto';
@@ -19,17 +19,17 @@ export class CashiersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.cashiersService.findOne(id);
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() updateCashierDto: UpdateCashierDto) {
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateCashierDto: UpdateCashierDto) {
     return this.cashiersService.update(id, updateCashierDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.cashiersService.remove(id);
   }
 }
