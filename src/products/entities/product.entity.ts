@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne, CreateDateColumn, UpdateDateColumn } from "typeorm"
 import { Discount } from './discount.entity'
 import { Category } from '../../categories/entities/category.entity'
 
@@ -10,6 +10,9 @@ export class Product {
 
   @Column()
   name: string
+
+  @Column({ unique: true })
+  sku: string
 
   @Column()
   image: string
@@ -27,4 +30,10 @@ export class Product {
   @ManyToOne(() => Category)
   @JoinColumn()
   category: Category
+
+  @CreateDateColumn({ select: false })
+  createdAt: Date;
+
+  @UpdateDateColumn({ select: false })
+  updatedAt: Date;
 }

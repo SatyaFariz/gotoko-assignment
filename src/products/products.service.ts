@@ -7,6 +7,7 @@ import { Discount } from './entities/discount.entity'
 import { Repository } from 'typeorm';
 import { HttpException } from '../classes'
 import { Category } from '../categories/entities/category.entity';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class ProductsService {
@@ -30,6 +31,7 @@ export class ProductsService {
       savedDiscount = await this.discountRepository.save(newDiscount)
     }
 
+    // create product
     const product = {
       ...createProductDto,
       discount: savedDiscount,
@@ -37,10 +39,17 @@ export class ProductsService {
     }
 
     const newProduct = this.productRepository.create(product);
+    
+    // assign temporary sku
+    newProduct.sku = uuidv4()
+
+    // save product
     const savedProduct = await this.productRepository.save(newProduct);
+    // update sku
+    const updatedProduct = await this.productRepository.save({ ...newProduct, sku: `ID00${savedProduct.productId}` });
     
     const payload = {
-      ...savedProduct,
+      ...updatedProduct,
       categoriesId: savedProduct.category.categoryId
     }
 
