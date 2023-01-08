@@ -23,7 +23,7 @@ export class CashiersService {
     });
 
     return {
-      cashiers: cashiers.map(cashier => this.removePasscodeFromKeys(cashier)),
+      cashiers: cashiers.map(cashier => this.withoutPasscode(cashier)),
       meta: {
         total,
         skip,
@@ -34,7 +34,7 @@ export class CashiersService {
 
   async findOne(id: number) {
     const cashier = await this.getById(id);
-    return this.removePasscodeFromKeys(cashier);
+    return this.withoutPasscode(cashier);
   }
 
   async update(id: number, updateCashierDto: UpdateCashierDto) {
@@ -55,7 +55,7 @@ export class CashiersService {
     return this.cashierRepository.findOneById(id);
   }
 
-  private removePasscodeFromKeys(cashier: Cashier) {
+  private withoutPasscode(cashier: Cashier) {
     const clone = { ...cashier };
     delete clone.passcode;
     return clone;
