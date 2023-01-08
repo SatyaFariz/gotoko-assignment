@@ -107,7 +107,7 @@ export class ProductsService {
 
     if(!product)
       throw new HttpException({ message: this.notFoundMessage }, 404);
-      
+
     if(product.discount) {
       product.discount = this.formatDiscount(product.discount, product.price);
     }
@@ -125,19 +125,23 @@ export class ProductsService {
 
   private format_BUY_N(qty: number, result: number): string {
     if(qty === 1) {
-      return `Only Rp. ${result}`
+      return `Only ${this.formatCurrency(result)}`
     }
 
-    return `Buy ${qty} only Rp. ${result}`
+    return `Buy ${qty} only ${this.formatCurrency(result)}`
+  }
+
+  private formatCurrency(price: number) {
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(price).replace('IDR', 'Rp.')
   }
 
   private format_PERCENT(qty: number, result: number, price): string {
     const afterDiscount = price - (result / 1000 * price)
     if(qty === 1) {
-      return `Discount ${result}% Rp. ${afterDiscount}`
+      return `Discount ${result}% ${this.formatCurrency(afterDiscount)}`
     }
 
-    return `Buy ${qty} discount ${result}%`
+    return `Buy ${qty} discount ${result}% ${this.formatCurrency(afterDiscount)} each`
   }
 
   private formatDiscount(discount: Discount, price: number) {
