@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException } from '@nestjs/common';
 import { CreateCashierDto } from './dto/create-cashier.dto';
 import { UpdateCashierDto } from './dto/update-cashier.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -35,13 +35,19 @@ export class CashiersService {
   }
 
   async findOne(id: number) {
-    const cashier = await this.getById(id);
-    return this.withoutPasscode(cashier);
+    // const cashier = await this.getById(id);
+    // return this.withoutPasscode(cashier);
+    throw new HttpException({
+      error: {},
+      status: false,
+      message: '',
+    }, 404)
   }
 
   async update(id: number, updateCashierDto: UpdateCashierDto) {
-    const cashier = await this.findOne(id);
-    return this.cashierRepository.save({ ...cashier, ...updateCashierDto });
+    // const cashier = await this.findOne(id);
+    // return this.cashierRepository.save({ ...cashier, ...updateCashierDto });
+    return 'test'
   }
 
   remove(id: number) {
