@@ -9,7 +9,7 @@ export class Cashier {
   @Column()
   name: string
 
-  @Column({ length: 6, select: false })
+  @Column({ length: 6 })
   passcode: string
 
   @CreateDateColumn({ select: false })
