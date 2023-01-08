@@ -11,6 +11,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class ProductsService {
+  private notFoundMessage = 'Product Not Found'
+
   constructor(
     @InjectRepository(Product) private productRepository: Repository<Product>,
     @InjectRepository(Discount) private discountRepository: Repository<Discount>
@@ -63,8 +65,21 @@ export class ProductsService {
     return `This action returns all products`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne(id: number) {
+    const product = await this.productRepository.findOne({
+      relations: {
+        category: true,
+        discount: true
+      },
+      where: {
+        productId: id
+      }
+    });
+
+    if(!product)
+      throw new HttpException({ message: this.notFoundMessage }, 404);
+      
+    return product;
   }
 
   update(id: number, updateProductDto: UpdateProductDto) {
