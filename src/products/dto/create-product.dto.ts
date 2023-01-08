@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString, IsUrl, IsInt, IsNumber, IsEnum, IsOptional, ValidateNested } from 'class-validator'
 import { DiscountType } from '../types'
-import { Type } from 'class-transformer'
+import { Type, Transform } from 'class-transformer'
 import { IsExpiryDate } from '../decorators/IsExpiryDate'
 
 class DiscountDto {
@@ -18,6 +18,7 @@ class DiscountDto {
 
   @IsNotEmpty()
   @IsExpiryDate()
+  @Transform(({ value }) => Number(value))
   expiredAt: Date
 }
 
