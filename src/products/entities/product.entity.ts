@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm"
+import { Discount } from './discount.entity'
 
 @Entity()
 export class Product {
@@ -8,4 +9,8 @@ export class Product {
 
   @Column()
   name: string
+
+  @OneToOne(() => Discount)
+  @JoinColumn()
+  discount: Discount
 }
