@@ -5,6 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindCashiersQueryParamsDto } from './dto/find-cashiers-query-params.dto';
 import { Cashier } from './entities/cashier.entity';
 import { Repository } from 'typeorm';
+import { AuthDto } from './dto/auth.dto';
+import { sign } from 'jsonwebtoken'
 
 @Injectable()
 export class CashiersService {
@@ -59,5 +61,17 @@ export class CashiersService {
     const clone = { ...cashier };
     delete clone.passcode;
     return clone;
+  }
+
+  async login(id: number, authDto: AuthDto) {
+    const access_secret = 'highly_confidential'
+    const cashier = await this.getPasscode(id)
+
+    if(authDto.passcode === cashier?.passcode) {
+      const token = sign({ cashierId: id }, access_secret)
+      return {
+        token
+      }
+    }
   }
 }
