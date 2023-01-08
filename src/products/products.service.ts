@@ -132,7 +132,16 @@ export class ProductsService {
   }
 
   private formatCurrency(price: number) {
-    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(price).replace('IDR', 'Rp.')
+    return new Intl.NumberFormat(
+      'id-ID', 
+      { 
+        style: 'currency', 
+        currency: 'IDR'
+      }
+    )
+    .format(price).replace('IDR', 'Rp.')
+    .replace('.00', '')
+    .replace(/,/g, '.')
   }
 
   private format_PERCENT(qty: number, result: number, price): string {
