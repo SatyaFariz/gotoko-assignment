@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsUrl, IsInt, IsNumber, IsEnum, IsDate, IsOptional, ValidateNested } from 'class-validator'
+import { IsNotEmpty, IsString, IsUrl, IsInt, IsNumber, IsEnum, IsOptional, ValidateNested } from 'class-validator'
 import { DiscountType } from '../types'
 import { Type } from 'class-transformer'
 import { IsUnixTime } from '../decorators/IsUnixTime'
