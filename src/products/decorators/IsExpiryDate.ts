@@ -1,7 +1,7 @@
 import { registerDecorator } from 'class-validator';
 
 function isValidDateObject (date: Date) {
-  if (Object.prototype.toString.call(date) === "[object Date]") {
+  if (Object.prototype.toString.call(date) === '[object Date]') {
     if (isNaN(date.getTime())) {
       return false;
     } else {
