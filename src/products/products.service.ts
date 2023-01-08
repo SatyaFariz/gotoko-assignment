@@ -121,8 +121,16 @@ export class ProductsService {
     return product;
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(id: number, updateProductDto: UpdateProductDto) {
+    let category = new Category()
+    category.categoryId = updateProductDto.categoryId
+    delete updateProductDto.categoryId
+    
+    const result = await this.productRepository.update(id, { ...updateProductDto, category });
+
+    if(result.affected === 0) {
+      throw new HttpException({ message: this.notFoundMessage }, 404);
+    }
   }
 
   async remove(id: number) {
