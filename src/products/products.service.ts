@@ -37,7 +37,17 @@ export class ProductsService {
     }
 
     const newProduct = this.productRepository.create(product);
-    return this.productRepository.save(newProduct);
+    const savedProduct = await this.productRepository.save(newProduct);
+    
+    const payload = {
+      ...savedProduct,
+      categoriesId: savedProduct.category.categoryId
+    }
+
+    delete payload.discount
+    delete payload.category
+
+    return payload
   }
 
   findAll() {
