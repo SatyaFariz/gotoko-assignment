@@ -11,6 +11,15 @@ export class Product {
   @Column()
   name: string
 
+  @Column()
+  image: string
+
+  @Column()
+  price: number
+
+  @Column()
+  stock: number
+
   @OneToOne(() => Discount)
   @JoinColumn()
   discount: Discount
