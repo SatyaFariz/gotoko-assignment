@@ -1,10 +1,5 @@
 import { IsNotEmpty, IsString, IsEnum, IsUrl, ValidateIf } from 'class-validator'
-
-export enum PaymentType {
-  'CASH' = 'CASH',
-  'E-WALLET' = 'E-WALLET',
-  'EDC' = 'EDC'
-}
+import { PaymentType } from '../types'
 
 export class CreatePaymentDto {
   @IsNotEmpty()

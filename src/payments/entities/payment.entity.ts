@@ -1,6 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm"
-
-type PaymentType = 'CASH' | 'E-WALLET' | 'EDC'
+import { PaymentType } from '../types'
 
 @Entity()
 export class Payment {
@@ -16,7 +15,7 @@ export class Payment {
 
   @Column({
     type: 'enum',
-    enum: ['CASH', 'E-WALLET', 'EDC']
+    enum: PaymentType
   })
   type: PaymentType
 
