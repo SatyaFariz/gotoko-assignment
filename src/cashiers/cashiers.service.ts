@@ -24,11 +24,12 @@ export class CashiersService {
     const { skip, limit } = query;
     const [cashiers, total] = await this.cashierRepository.findAndCount({
       skip,
-      take: limit
+      take: limit,
+      select: ['cashierId', 'name']
     });
 
     return {
-      cashiers: cashiers.map(cashier => this.withoutPasscode(cashier)),
+      cashiers,
       meta: {
         total,
         skip,
@@ -38,11 +39,17 @@ export class CashiersService {
   }
 
   async findOne(id: number) {
-    const cashier = await this.getById(id);
-    if(cashier)
-      return this.withoutPasscode(cashier);
+    const cashier = await this.cashierRepository.findOne({
+      where: {
+        cashierId: id
+      },
+      select: ['cashierId', 'name']
+    });
 
-    throw new HttpException({ message: this.notFoundMessage }, 404);
+    if(!cashier)
+      throw new HttpException({ message: this.notFoundMessage }, 404);
+      
+    return cashier;
   }
 
   async update(id: number, updateCashierDto: UpdateCashierDto) {
@@ -59,18 +66,17 @@ export class CashiersService {
   }
 
   async getPasscode(id: number) {
-    const cashier = await this.getById(id);
-    return { passcode: cashier.passcode };
-  }
+    const cashier = await this.cashierRepository.findOne({
+      where: {
+        cashierId: id
+      },
+      select: ['passcode']
+    });
 
-  private getById(id: number) {
-    return this.cashierRepository.findOneById(id);
-  }
-
-  private withoutPasscode(cashier: Cashier) {
-    const clone = { ...cashier };
-    delete clone.passcode;
-    return clone;
+    if(!cashier)
+      throw new HttpException({ message: this.notFoundMessage }, 404);
+      
+    return cashier;
   }
 
   async login(id: number, authDto: AuthDto) {
