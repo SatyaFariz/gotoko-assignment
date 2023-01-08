@@ -19,7 +19,7 @@ class DiscountDto {
   @IsNotEmpty()
   @IsExpiryDate()
   @Transform(({ value }) => Number(value))
-  expiredAt: Date
+  expiredAt: number
 }
 
 export class CreateProductDto {
