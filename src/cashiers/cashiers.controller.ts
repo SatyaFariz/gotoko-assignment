@@ -23,6 +23,11 @@ export class CashiersController {
     return this.cashiersService.findOne(id);
   }
 
+  @Get(':id/passcode')
+  getPasscode(@Param('id', ParseIntPipe) id: number) {
+    return this.cashiersService.getPasscode(id);
+  }
+
   @Put(':id')
   update(@Param('id', ParseIntPipe) id: number, @Body() updateCashierDto: UpdateCashierDto) {
     return this.cashiersService.update(id, updateCashierDto);

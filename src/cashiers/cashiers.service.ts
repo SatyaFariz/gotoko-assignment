@@ -4,7 +4,7 @@ import { UpdateCashierDto } from './dto/update-cashier.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindCashiersQueryParamsDto } from './dto/find-cashiers-query-params.dto';
 import { Cashier } from './entities/cashier.entity';
-import { Repository } from 'typeorm';
+import { Repository, getRepository } from 'typeorm';
 
 @Injectable()
 export class CashiersService {
@@ -43,5 +43,10 @@ export class CashiersService {
 
   remove(id: number) {
     return this.cashierRepository.delete(id);
+  }
+
+  async getPasscode(id: number) {
+    
+    return { passcode: 'd'}
   }
 }
