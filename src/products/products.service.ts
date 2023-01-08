@@ -125,8 +125,12 @@ export class ProductsService {
     return `This action updates a #${id} product`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async remove(id: number) {
+    const result = await this.productRepository.delete(id);
+    
+    if(result.affected === 0) {
+      throw new HttpException({ message: this.notFoundMessage }, 404);
+    }
   }
 
   private format_BUY_N(qty: number, result: number): string {
