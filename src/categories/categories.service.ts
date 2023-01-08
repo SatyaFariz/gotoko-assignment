@@ -5,9 +5,12 @@ import { FindCategoriesQueryParamsDto } from './dto/find-categories-query-params
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 import { Repository } from 'typeorm';
+import { HttpException } from '../classes'
 
 @Injectable()
 export class CategoriesService {
+  private notFoundMessage: string = 'Category Not Found';
+
   constructor(@InjectRepository(Category) private categoryRepository: Repository<Category>) {}
 
   create(createCategoryDto: CreateCategoryDto) {
@@ -32,16 +35,26 @@ export class CategoriesService {
     };
   }
 
-  findOne(id: number) {
-    return this.categoryRepository.findOneById(id);
+  async findOne(id: number) {
+    const category = await this.categoryRepository.findOneById(id);
+
+    if(!category)
+      throw new HttpException({ message: this.notFoundMessage }, 404);
+      
+    return category;
   }
 
-  async update(id: number, updateCategoryDto: UpdateCategoryDto): Promise<UpdateCategoryDto> {
-    const category = await this.findOne(id);
-    return this.categoryRepository.save({ ...category, ...updateCategoryDto });
+  async update(id: number, updateCategoryDto: UpdateCategoryDto) {
+    const result = await this.categoryRepository.update(id, updateCategoryDto);
+    if(result.affected === 0) {
+      throw new HttpException({ message: this.notFoundMessage }, 404);
+    }
   }
 
-  remove(id: number) {
-    return this.categoryRepository.delete(id);
+  async remove(id: number) {
+    const result = await this.categoryRepository.delete(id);
+    if(result.affected === 0) {
+      throw new HttpException({ message: this.notFoundMessage }, 404);
+    }
   }
 }
