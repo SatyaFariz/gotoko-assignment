@@ -1,4 +1,4 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateCashierDto } from './dto/create-cashier.dto';
 import { UpdateCashierDto } from './dto/update-cashier.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,7 +7,7 @@ import { Cashier } from './entities/cashier.entity';
 import { Repository } from 'typeorm';
 import { AuthDto } from './dto/auth.dto';
 import { sign } from 'jsonwebtoken'
-import { ExceptionPayloadDto } from '../dto/exception-payload.dto'
+import { HttpException } from '../classes'
 
 @Injectable()
 export class CashiersService {
@@ -37,7 +37,10 @@ export class CashiersService {
 
   async findOne(id: number) {
     const cashier = await this.getById(id);
-    return this.withoutPasscode(cashier);
+    if(cashier)
+      return this.withoutPasscode(cashier);
+
+    throw new HttpException({ message: 'Cashier Not Found' }, 404)
   }
 
   async update(id: number, updateCashierDto: UpdateCashierDto) {
