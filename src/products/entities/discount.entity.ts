@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { DiscountType } from '../types'
 
 @Entity()
 export class Discount {
@@ -8,4 +9,16 @@ export class Discount {
 
   @Column()
   qty: number
+
+  @Column()
+  result: number
+
+  @Column()
+  expiredAt: Date
+
+  @Column({
+    type: 'enum',
+    enum: DiscountType
+  })
+  type: DiscountType
 }
