@@ -8,7 +8,8 @@ import { Repository, FindOptionsWhere, Like } from 'typeorm';
 import { HttpException } from '../classes'
 import { Category } from '../categories/entities/category.entity';
 import { v4 as uuidv4 } from 'uuid';
-import { FindProductsQueryParamsDto } from './dto/find-products-query-params.dto'
+import { FindProductsQueryParamsDto } from './dto/find-products-query-params.dto';
+import * as moment from 'moment';
 
 @Injectable()
 export class ProductsService {
@@ -85,7 +86,12 @@ export class ProductsService {
     });
 
     return {
-      products,
+      products: products.map(product => {
+        if(product.discount) {
+          product.discount = this.formatDiscount(product.discount, product.price)
+        }
+        return product
+      }),
       meta: {
         total,
         skip,
@@ -157,7 +163,8 @@ export class ProductsService {
     const { qty, result } = discount
     const clone = {
       ...discount,
-      stringFormat: discount.type === 'BUY_N' ? this.format_BUY_N(qty, result) : this.format_PERCENT(qty, result, price)
+      stringFormat: discount.type === 'BUY_N' ? this.format_BUY_N(qty, result) : this.format_PERCENT(qty, result, price),
+      expiredAtFormat: moment(new Date(discount.expiredAt)).format('DD MMM YYYY')
     }
     return clone
   }
