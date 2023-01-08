@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsString, IsUrl, IsInt, IsNumber, IsEnum, IsOptional, ValidateNested } from 'class-validator'
 import { DiscountType } from '../types'
 import { Type } from 'class-transformer'
-import { IsUnixTime } from '../decorators/IsUnixTime'
+import { IsExpiryDate } from '../decorators/IsExpiryDate'
 
 class DiscountDto {
   @IsNotEmpty()
@@ -17,12 +17,7 @@ class DiscountDto {
   type: DiscountType
 
   @IsNotEmpty()
-  @IsUnixTime(
-    { min: new Date() },
-    {
-      message: 'expiredAt should be a unix time in the future',
-    }
-  )
+  @IsExpiryDate()
   expiredAt: Date
 }
 
