@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, ParseIntPipe, Query } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { FindProductsQueryParamsDto } from './dto/find-products-query-params.dto'
 
 @Controller('products')
 export class ProductsController {
@@ -13,8 +14,8 @@ export class ProductsController {
   }
 
   @Get()
-  find() {
-    return this.productsService.find();
+  find(@Query() query: FindProductsQueryParamsDto) {
+    return this.productsService.find(query);
   }
 
   @Get(':id')

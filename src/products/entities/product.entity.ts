@@ -20,6 +20,9 @@ export class Product {
   @Column()
   price: number
 
+  @Column({ select: false })
+  categoryCategoryId: number
+
   @Column()
   stock: number
 

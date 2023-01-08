@@ -4,10 +4,11 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
 import { Discount } from './entities/discount.entity'
-import { Repository } from 'typeorm';
+import { Repository, FindOptionsWhere, Like } from 'typeorm';
 import { HttpException } from '../classes'
 import { Category } from '../categories/entities/category.entity';
 import { v4 as uuidv4 } from 'uuid';
+import { FindProductsQueryParamsDto } from './dto/find-products-query-params.dto'
 
 @Injectable()
 export class ProductsService {
@@ -61,8 +62,36 @@ export class ProductsService {
     return payload
   }
 
-  find() {
-    return `This action returns all products`;
+  async find(query: FindProductsQueryParamsDto) {
+    const { skip, limit } = query;
+    const where: FindOptionsWhere<Product> = {}
+    const searchTerm = query.q?.trim()
+
+    if(query.categoryId)
+      where.categoryCategoryId = query.categoryId
+
+    if(searchTerm?.length > 0) {
+      where.name = Like(`%${searchTerm}%`)
+    }
+
+    const [products, total] = await this.productRepository.findAndCount({
+      skip,
+      take: limit,
+      relations: {
+        category: true,
+        discount: true
+      },
+      where
+    });
+
+    return {
+      products,
+      meta: {
+        total,
+        skip,
+        limit
+      }
+    };
   }
 
   async findOne(id: number) {
