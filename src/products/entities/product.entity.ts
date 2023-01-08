@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne } from "typeorm"
 import { Discount } from './discount.entity'
 import { Category } from '../../categories/entities/category.entity'
 
@@ -24,7 +24,7 @@ export class Product {
   @JoinColumn()
   discount: Discount
 
-  @OneToOne(() => Category)
+  @ManyToOne(() => Category)
   @JoinColumn()
   category: Category
 }
