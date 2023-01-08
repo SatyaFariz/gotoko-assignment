@@ -61,7 +61,7 @@ export class ProductsService {
     return payload
   }
 
-  findAll() {
+  find() {
     return `This action returns all products`;
   }
 
