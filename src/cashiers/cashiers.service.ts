@@ -4,7 +4,7 @@ import { UpdateCashierDto } from './dto/update-cashier.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindCashiersQueryParamsDto } from './dto/find-cashiers-query-params.dto';
 import { Cashier } from './entities/cashier.entity';
-import { Repository, getRepository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class CashiersService {
