@@ -1,11 +1,11 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
 
 @Entity()
-export class Product {
+export class Discount {
 
   @PrimaryGeneratedColumn()
-  productId: number
+  discountId: number
 
   @Column()
-  name: string
+  qty: number
 }
