@@ -108,6 +108,10 @@ export class ProductsService {
     if(!product)
       throw new HttpException({ message: this.notFoundMessage }, 404);
       
+    if(product.discount) {
+      product.discount = this.formatDiscount(product.discount, product.price);
+    }
+
     return product;
   }
 
@@ -117,5 +121,31 @@ export class ProductsService {
 
   remove(id: number) {
     return `This action removes a #${id} product`;
+  }
+
+  private format_BUY_N(qty: number, result: number): string {
+    if(qty === 1) {
+      return `Only Rp. ${result}`
+    }
+
+    return `Buy ${qty} only Rp. ${result}`
+  }
+
+  private format_PERCENT(qty: number, result: number, price): string {
+    const afterDiscount = price - (result / 1000 * price)
+    if(qty === 1) {
+      return `Discount ${result}% Rp. ${afterDiscount}`
+    }
+
+    return `Buy ${qty} discount ${result}%`
+  }
+
+  private formatDiscount(discount: Discount, price: number) {
+    const { qty, result } = discount
+    const clone = {
+      ...discount,
+      stringFormat: discount.type === 'BUY_N' ? this.format_BUY_N(qty, result) : this.format_PERCENT(qty, result, price)
+    }
+    return clone
   }
 }
