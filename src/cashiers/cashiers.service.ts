@@ -11,6 +11,8 @@ import { HttpException } from '../classes'
 
 @Injectable()
 export class CashiersService {
+  private notFoundMessage: string = 'Cashier Not Found';
+
   constructor(@InjectRepository(Cashier) private cashierRepository: Repository<Cashier>) {}
   
   create(createCashierDto: CreateCashierDto) {
@@ -40,7 +42,7 @@ export class CashiersService {
     if(cashier)
       return this.withoutPasscode(cashier);
 
-    throw new HttpException({ message: 'Cashier Not Found' }, 404)
+    throw new HttpException({ message: this.notFoundMessage }, 404);
   }
 
   async update(id: number, updateCashierDto: UpdateCashierDto) {
@@ -48,8 +50,12 @@ export class CashiersService {
     return this.cashierRepository.save({ ...cashier, ...updateCashierDto });
   }
 
-  remove(id: number) {
-    return this.cashierRepository.delete(id);
+  async remove(id: number) {
+    const result = await this.cashierRepository.delete(id);
+    
+    if(result.affected === 0) {
+      throw new HttpException({ message: this.notFoundMessage }, 404);
+    }
   }
 
   async getPasscode(id: number) {
