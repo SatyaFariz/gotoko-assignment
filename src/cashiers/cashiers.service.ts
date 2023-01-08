@@ -7,6 +7,7 @@ import { Cashier } from './entities/cashier.entity';
 import { Repository } from 'typeorm';
 import { AuthDto } from './dto/auth.dto';
 import { sign } from 'jsonwebtoken'
+import { ExceptionPayloadDto } from '../dto/exception-payload.dto'
 
 @Injectable()
 export class CashiersService {
@@ -35,19 +36,13 @@ export class CashiersService {
   }
 
   async findOne(id: number) {
-    // const cashier = await this.getById(id);
-    // return this.withoutPasscode(cashier);
-    throw new HttpException({
-      error: {},
-      status: false,
-      message: '',
-    }, 404)
+    const cashier = await this.getById(id);
+    return this.withoutPasscode(cashier);
   }
 
   async update(id: number, updateCashierDto: UpdateCashierDto) {
-    // const cashier = await this.findOne(id);
-    // return this.cashierRepository.save({ ...cashier, ...updateCashierDto });
-    return 'test'
+    const cashier = await this.findOne(id);
+    return this.cashierRepository.save({ ...cashier, ...updateCashierDto });
   }
 
   remove(id: number) {
