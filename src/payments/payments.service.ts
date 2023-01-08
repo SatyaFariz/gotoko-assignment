@@ -5,9 +5,12 @@ import { FindPaymentsQueryParamsDto } from './dto/find-payments-query-params.dto
 import { InjectRepository } from '@nestjs/typeorm';
 import { Payment } from './entities/payment.entity';
 import { Repository } from 'typeorm';
+import { HttpException } from '../classes'
 
 @Injectable()
 export class PaymentsService {
+  private notFoundMessage: string = 'Payment Not Found';
+
   constructor(@InjectRepository(Payment) private paymentRepository: Repository<Payment>) {}
 
   create(createPaymentDto: CreatePaymentDto) {
@@ -32,15 +35,26 @@ export class PaymentsService {
     };
   }
 
-  findOne(id: number) {
-    return this.paymentRepository.findOneById(id);
+  async findOne(id: number) {
+    const payment = await this.paymentRepository.findOneById(id);
+
+    if(!payment)
+      throw new HttpException({ message: this.notFoundMessage }, 404);
+      
+    return payment;
   }
 
   async update(id: number, updatePaymentDto: UpdatePaymentDto) {
-    return this.paymentRepository.update(id, updatePaymentDto);
+    const result = await this.paymentRepository.update(id, updatePaymentDto);
+    if(result.affected === 0) {
+      throw new HttpException({ message: this.notFoundMessage }, 404);
+    }
   }
 
-  remove(id: number) {
-    return this.paymentRepository.delete(id);
+  async remove(id: number) {
+    const result = await this.paymentRepository.delete(id);
+    if(result.affected === 0) {
+      throw new HttpException({ message: this.notFoundMessage }, 404);
+    }
   }
 }
