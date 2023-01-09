@@ -8,6 +8,8 @@ import { Repository } from 'typeorm';
 import { AuthDto } from './dto/auth.dto';
 import { sign } from 'jsonwebtoken'
 import { HttpException } from '../classes'
+import generateCreateEmptyBodyErrorObject from '../helpers/generateCreateEmptyBodyErrorObject'
+import generateUpdateEmptyBodyErrorObject from '../helpers/generateUpdateEmptyBodyErrorObject'
 
 @Injectable()
 export class CashiersService {
@@ -16,6 +18,10 @@ export class CashiersService {
   constructor(@InjectRepository(Cashier) private cashierRepository: Repository<Cashier>) {}
   
   create(createCashierDto: CreateCashierDto) {
+    if(Object.keys(createCashierDto).length === 0) {
+      const error = generateCreateEmptyBodyErrorObject(['name', 'passcode'])
+      throw new HttpException(error, 400)
+    }
     const newCashier = this.cashierRepository.create(createCashierDto);
     return this.cashierRepository.save(newCashier);
   }
@@ -53,6 +59,10 @@ export class CashiersService {
   }
 
   async update(id: number, updateCashierDto: UpdateCashierDto) {
+    if(Object.keys(updateCashierDto).length === 0) {
+      const error = generateUpdateEmptyBodyErrorObject(['name', 'passcode'])
+      throw new HttpException(error, 400)
+    }
     const cashier = await this.findOne(id);
     return this.cashierRepository.save({ ...cashier, ...updateCashierDto });
   }

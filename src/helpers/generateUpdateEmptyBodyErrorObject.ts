@@ -1,6 +1,6 @@
 
 export default function generateCreateEmptyBodyErrorObject(fields: string[]): { error: object[], message: string } {
-  const message = `body ValidationError: "value" must contain at least one of [${fields.join(', ')}]`
+  const message = `"value" must contain at least one of [${fields.join(', ')}]`
   const error = [{
     message,
     path: [],
@@ -13,5 +13,5 @@ export default function generateCreateEmptyBodyErrorObject(fields: string[]): { 
     }
   }]
 
-  return { error, message }
+  return { error, message: `body ValidationError: ${message}` }
 }
