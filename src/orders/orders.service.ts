@@ -82,15 +82,21 @@ export class OrdersService {
     try {
       const savedOrder = await queryRunner.manager.save(newOrder);
       await Promise.all(createOrderDto.products.map(item => {
+        const productData = products.find(product => product.productId === item.productId)
         const product = new Product()
         product.productId = item.productId
         const order = new Order()
         order.orderId = savedOrder.orderId
+
+        const totalNormalPrice = item.qty * productData.price
+        const totalFinalPrice = this.getFinalPrice(item.qty, productData.price, productData.discount)
   
         const newItem = this.orderItemRepository.create({
           product,
           order,
-          qty: item.qty
+          qty: item.qty,
+          totalFinalPrice,
+          totalNormalPrice
         })
   
         return queryRunner.manager.save(newItem)
