@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
 import generateCreateEmptyBodyErrorObject from '../helpers/generateCreateEmptyBodyErrorObject'
 import { HttpException } from '../classes'
 import { InjectRepository } from '@nestjs/typeorm';
@@ -317,6 +316,15 @@ export class OrdersService {
     } else {
       return orderQty * price
     }
+  }
+
+  async checkDownload(id: number) {
+    const order = await this.orderRepository.findOneById(id)
+
+    if(!order)
+      throw new HttpException({ message: this.notFoundMessage }, 404);
+
+    return { isDownload: order.isDownload }
   }
 
   private reformatOrder(order: Order) {

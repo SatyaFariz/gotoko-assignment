@@ -30,6 +30,11 @@ export class OrdersController {
     return this.ordersService.find(query);
   }
 
+  @Get(':id/check-download')
+  checkDownload(@Param('id', ParseIntPipe) id: number) {
+    return this.ordersService.checkDownload(id);
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.ordersService.findOne(id);
