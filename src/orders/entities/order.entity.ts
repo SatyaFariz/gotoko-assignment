@@ -13,6 +13,9 @@ export class Order {
   isDownload: boolean
 
   @Column()
+  paymentPaymentId: number
+
+  @Column()
   totalPaid: number
 
   @Column()

@@ -342,7 +342,8 @@ export class OrdersService {
         paymentId: undefined
       },
       payment: undefined,
-      isDownload: undefined
+      isDownload: undefined,
+      paymentPaymentId: undefined
     };
   }
 
