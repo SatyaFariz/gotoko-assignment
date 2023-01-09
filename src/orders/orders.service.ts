@@ -91,11 +91,14 @@ export class OrdersService {
         product.productId = item.productId
         const order = new Order()
         order.orderId = savedOrder.orderId
+        const discount = new Discount()
+        discount.discountId = productData.discount.discountId
 
         const totalNormalPrice = item.qty * productData.price
         const totalFinalPrice = this.getFinalPrice(item.qty, productData.price, productData.discount)
   
         const newItem = this.orderItemRepository.create({
+          discount,
           product,
           order,
           qty: item.qty,
@@ -171,10 +174,27 @@ export class OrdersService {
       }
     });
 
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+
+    const orderItems = await this.orderItemRepository.find({
+      where: {
+        orderOrderId: id
+      },
+      relations: {
+        product: true,
+        discount: true
+      }
+    })
+
     if(!order)
       throw new HttpException({ message: this.notFoundMessage }, 404);
       
-    return this.reformatOrder(order)
+    return {
+      order: this.reformatOrder(order),
+      products: orderItems
+    }
   }
 
   update(id: number, updateOrderDto: UpdateOrderDto) {
