@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, ParseIntPipe, Query, ParseArrayPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, ParseIntPipe, Query, ParseArrayPipe, Res } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { FindOrdersQueryParamsDto } from './dto/find-orders-query-params.dto'
@@ -28,6 +28,12 @@ export class OrdersController {
   @Get()
   find(@Query() query: FindOrdersQueryParamsDto) {
     return this.ordersService.find(query);
+  }
+
+  
+  @Get(':id/download')
+  async downloadPDF(@Res() res, @Param('id', ParseIntPipe) id: number) {
+    return this.ordersService.downloadPDF(res, id)
   }
 
   @Get(':id/check-download')

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, StreamableFile } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import generateCreateEmptyBodyErrorObject from '../helpers/generateCreateEmptyBodyErrorObject'
 import { HttpException } from '../classes'
@@ -14,6 +14,8 @@ import { FindOrdersQueryParamsDto } from './dto/find-orders-query-params.dto'
 import { v4 as uuidv4 } from 'uuid';
 import * as moment from 'moment'
 import { GetSubtotalDto } from './dto/get-subtotal.dto'
+import { createReadStream } from 'fs';
+import { join } from 'path';
 
 @Injectable()
 export class OrdersService {
@@ -290,6 +292,16 @@ export class OrdersService {
       }, 0),
       products: subtotals
     }
+  }
+
+  async downloadPDF(res, id: number) {
+    const order = await this.orderRepository.findOneById(id)
+
+    if(!order)
+      throw new HttpException({ message: this.notFoundMessage }, 404);
+
+    const file = createReadStream(join(process.cwd(), 'dummy_invoice.pdf'));
+    file.pipe(res);
   }
 
   private getFinalPrice(orderQty: number, price: number, discount: Discount): number {
