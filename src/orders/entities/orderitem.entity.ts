@@ -11,6 +11,12 @@ export class OrderItem {
   @Column()
   qty: number
 
+  @Column()
+  totalNormalPrice: number
+
+  @Column()
+  totalFinalPrice: number
+
   @ManyToOne(() => Order)
   @JoinColumn()
   order: Order
