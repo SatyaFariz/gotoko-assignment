@@ -10,6 +10,8 @@ import { Category } from '../categories/entities/category.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { FindProductsQueryParamsDto } from './dto/find-products-query-params.dto';
 import * as moment from 'moment';
+import generateCreateEmptyBodyErrorObject from '../helpers/generateCreateEmptyBodyErrorObject'
+import generateUpdateEmptyBodyErrorObject from '../helpers/generateUpdateEmptyBodyErrorObject'
 
 @Injectable()
 export class ProductsService {
@@ -21,6 +23,10 @@ export class ProductsService {
   ) {}
   
   async create(createProductDto: CreateProductDto) {
+    if(Object.keys(createProductDto).length === 0) {
+      const error = generateCreateEmptyBodyErrorObject(['categoryId', 'name', 'image', 'price', 'stock',])
+      throw new HttpException(error, 400)
+    }
     // save discount
     let savedDiscount: Discount = undefined
     let category = new Category()
@@ -122,6 +128,10 @@ export class ProductsService {
   }
 
   async update(id: number, updateProductDto: UpdateProductDto) {
+    if(Object.keys(updateProductDto).length === 0) {
+      const error = generateCreateEmptyBodyErrorObject(['categoryId', 'name', 'image', 'price', 'stock',])
+      throw new HttpException(error, 400)
+    }
     let category = new Category()
     category.categoryId = updateProductDto.categoryId
     delete updateProductDto.categoryId
