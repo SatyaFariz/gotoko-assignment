@@ -70,8 +70,11 @@ export class OrdersService {
     cashier.cashierId = 3
 
     const newOrder = this.orderRepository.create({
+      receiptId: uuidv4(),
       payment,
       cashier,
+      totalPrice: 0,
+      totalReturn: 0,
       totalPaid: createOrderDto.totalPaid
     })
 
@@ -82,7 +85,7 @@ export class OrdersService {
 
     try {
       const savedOrder = await queryRunner.manager.save(newOrder);
-      await Promise.all(createOrderDto.products.map(item => {
+      const orderItems = await Promise.all(createOrderDto.products.map(item => {
         const productData = products.find(product => product.productId === item.productId)
         const product = new Product()
         product.productId = item.productId
@@ -110,6 +113,13 @@ export class OrdersService {
 
         return queryRunner.manager.update(Product, productId, { stock: product.stock - orderedQty })
       }))
+
+      const totalPrice = orderItems.reduce((total, currentItem) => {
+        total = total + currentItem.totalFinalPrice
+        return total
+      }, 0)
+
+      await queryRunner.manager.update(Order, savedOrder.orderId, { totalPrice, totalReturn: savedOrder.totalPaid - totalPrice })
 
       await queryRunner.commitTransaction();
     } catch (err) {
