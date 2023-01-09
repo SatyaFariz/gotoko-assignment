@@ -9,11 +9,12 @@ import { CategoriesModule } from './categories/categories.module';
 import { CashiersModule } from './cashiers/cashiers.module';
 import { PaymentsModule } from './payments/payments.module';
 import { OrdersModule } from './orders/orders.module';
+import { RevenuesModule } from './revenues/revenues.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(dataSourceOptions), 
-    UserModule, ProductsModule, CategoriesModule, CashiersModule, PaymentsModule, OrdersModule
+    UserModule, ProductsModule, CategoriesModule, CashiersModule, PaymentsModule, OrdersModule, RevenuesModule
   ],
   controllers: [AppController],
   providers: [AppService],
