@@ -167,24 +167,29 @@ export class OrdersService {
   }
 
   private getFinalPrice(orderQty: number, price: number, discount: Discount): number {
-    if(discount.type === 'PERCENT') {
-      if(orderQty >= discount.qty) {
-        const numberOfDiscountedProducts = orderQty - (orderQty % discount.qty)
-        const multiplyBy = numberOfDiscountedProducts / discount.qty
+    if(new Date(discount.expiredAt) > new Date() && orderQty >= discount.qty) {
+      const regularPriceProductsCount = orderQty % discount.qty
+      const discountedProductsCount = orderQty - regularPriceProductsCount
+      const multiplyBy = discountedProductsCount / discount.qty
 
-        let finalPrice = 0
+      let finalPrice = regularPriceProductsCount * price
+      if(discount.type === 'PERCENT') {
         for(let i = 0; i < multiplyBy; i++) {
           const totalPrice = price * discount.qty
           const totalPriceAfterDiscount = totalPrice - (discount.result / 100 * totalPrice)
 
           finalPrice = finalPrice + totalPriceAfterDiscount
         }
-
-        return finalPrice
+      } else {
+        for(let i = 0; i < multiplyBy; i++) {
+          finalPrice = finalPrice + discount.result
+        }
       }
-    }
 
-    return 0
+      return finalPrice
+    } else {
+      return orderQty * price
+    }
   }
 
   private reformatOrder(order: Order) {
