@@ -177,6 +177,9 @@ export class OrdersService {
       }
     });
 
+    if(!order)
+      throw new HttpException({ message: this.notFoundMessage }, 404);
+
     const orderItems = await this.orderItemRepository.find({
       where: {
         orderOrderId: id
@@ -186,9 +189,6 @@ export class OrdersService {
         discount: true
       }
     })
-
-    if(!order)
-      throw new HttpException({ message: this.notFoundMessage }, 404);
       
     return {
       order: this.reformatOrder(order),
