@@ -11,6 +11,7 @@ import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/orderitem.entity';
 import { Repository, In, DataSource } from 'typeorm';
 import { Discount } from 'src/products/entities/discount.entity';
+import { FindOrdersQueryParamsDto } from './dto/find-orders-query-params.dto'
 
 @Injectable()
 export class OrdersService {
@@ -121,8 +122,25 @@ export class OrdersService {
     }
   }
 
-  find() {
-    return `This action returns all orders`;
+  async find(query: FindOrdersQueryParamsDto) {
+    const { skip, limit } = query;
+    const [orders, total] = await this.orderRepository.findAndCount({
+      skip,
+      take: limit,
+      relations: {
+        cashier: true,
+        payment: true
+      }
+    });
+
+    return {
+      orders: orders.map(order => this.reformatOrder(order)),
+      meta: {
+        total,
+        skip,
+        limit
+      }
+    };
   }
 
   async findOne(id: number) {
@@ -137,22 +155,7 @@ export class OrdersService {
     if(!order)
       throw new HttpException({ message: this.notFoundMessage }, 404);
       
-    return {
-      ...order,
-      cashiersId: order.cashier.cashierId,
-      paymentTypesId: order.payment.paymentId,
-      cashier: {
-        ...order.cashier,
-        passcode: undefined
-      },
-      payment_type: {
-        ...order.payment,
-        paymentTypeId: order.payment.paymentId,
-        paymentId: undefined
-      },
-      payment: undefined,
-      isDownload: undefined
-    };
+    return this.reformatOrder(order)
   }
 
   update(id: number, updateOrderDto: UpdateOrderDto) {
@@ -182,5 +185,24 @@ export class OrdersService {
     }
 
     return 0
+  }
+
+  private reformatOrder(order: Order) {
+    return {
+      ...order,
+      cashiersId: order.cashier.cashierId,
+      paymentTypesId: order.payment.paymentId,
+      cashier: {
+        ...order.cashier,
+        passcode: undefined
+      },
+      payment_type: {
+        ...order.payment,
+        paymentTypeId: order.payment.paymentId,
+        paymentId: undefined
+      },
+      payment: undefined,
+      isDownload: undefined
+    };
   }
 }

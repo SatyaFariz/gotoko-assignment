@@ -23,7 +23,7 @@ export class Order {
   @JoinColumn()
   cashier: Cashier
 
-  @CreateDateColumn({ select: false })
+  @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn({ select: false })
