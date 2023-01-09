@@ -15,6 +15,9 @@ export class OrderItem {
   @Column({ select: false })
   orderOrderId: number
 
+  @Column({ select: false })
+  productProductId: number
+
   @Column()
   unitPrice: number
 

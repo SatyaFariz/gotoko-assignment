@@ -64,11 +64,12 @@ export class OrdersService {
       throw new HttpException(error, 500)
     }
 
+    const cashierId = 3
     let payment = new Payment()
     payment.paymentId = createOrderDto.paymentId
 
     let cashier = new Cashier()
-    cashier.cashierId = 3
+    cashier.cashierId = cashierId
 
     const newOrder = this.orderRepository.create({
       receiptId: uuidv4(),
@@ -125,10 +126,38 @@ export class OrdersService {
         return total
       }, 0)
 
+      const totalReturn = savedOrder.totalPaid - totalPrice
+
       // update total price and total return
-      await queryRunner.manager.update(Order, savedOrder.orderId, { totalPrice, totalReturn: savedOrder.totalPaid - totalPrice })
+      await queryRunner.manager.update(Order, savedOrder.orderId, { totalPrice, totalReturn })
 
       await queryRunner.commitTransaction();
+
+      return {
+        order: {
+          orderId: savedOrder.orderId,
+          cashiersId: cashierId,
+          paymentTypesId: createOrderDto.paymentId,
+          totalPrice: totalPrice,
+          totalPaid: createOrderDto.totalPaid,
+          totalReturn: totalReturn,
+          receiptId: savedOrder.receiptId,
+          updatedAt: savedOrder.createdAt,
+          createdAt: savedOrder.updatedAt
+        },
+        products: orderItems.map(item => {
+          const productData = products.find(product => product.productId === item.productProductId)
+          return {
+            productId: productData.productId,
+            name: productData.name,
+            price: productData.price,
+            qty: item.qty,
+            totalNormalPrice: item.totalNormalPrice,
+            totalFinalPrice: item.totalFinalPrice,
+            discount: productData.discount ? this.formatDiscount(productData.discount, productData.price) : null
+          }
+        })
+      }
     } catch (err) {
       // since we have errors lets rollback the changes we made
       await queryRunner.rollbackTransaction();
