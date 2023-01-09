@@ -10,7 +10,12 @@ export class TypeOrmFilter implements ExceptionFilter {
         const customResponse = {
             success: false,
             message: 'Something Went Wrong',
-            error: [{ code: code, message: message }]
+            error: [{ 
+              type: code.toString(), 
+              message: message,
+              path: [],
+              context: {}
+            }]
         };
 
         response.status(500).json(customResponse);
