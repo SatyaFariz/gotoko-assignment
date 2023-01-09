@@ -9,7 +9,7 @@ export class Order {
   @PrimaryGeneratedColumn()
   orderId: number
 
-  @Column({ default: false })
+  @Column({ default: true })
   isDownload: boolean
 
   @Column()
