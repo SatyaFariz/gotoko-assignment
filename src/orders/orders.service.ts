@@ -237,14 +237,6 @@ export class OrdersService {
     }
   }
 
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} order`;
-  }
-
   async calculateSubtotal(subtotalDto: GetSubtotalDto[]) {
     if(!Array.isArray(subtotalDto) || subtotalDto?.length === 0) {
       const error = {
