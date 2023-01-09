@@ -179,7 +179,7 @@ export class ProductsService {
       return `Discount ${result}% ${this.formatCurrency(afterDiscount)}`
     }
 
-    return `Buy ${qty} discount ${result}% ${this.formatCurrency(afterDiscount)} each`
+    return `Buy ${qty} discount ${result}% ${this.formatCurrency(afterDiscount)}`
   }
 
   private formatDiscount(discount: Discount, price: number) {
