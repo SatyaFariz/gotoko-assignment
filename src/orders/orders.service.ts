@@ -6,6 +6,7 @@ import { HttpException } from '../classes'
 import { InjectRepository } from '@nestjs/typeorm';
 import { Payment } from '../payments/entities/payment.entity';
 import { Product } from '../products/entities/product.entity';
+import { Cashier } from '../cashiers/entities/cashier.entity';
 import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/orderitem.entity';
 import { Repository, In, DataSource } from 'typeorm';
@@ -36,8 +37,6 @@ export class OrdersService {
       where: { productId: In(createOrderDto.products.map(i => i.productId ))}
     })
 
-    console.log(products)
-
     for(const product of products) {
       const { productId } = product
       const orderedQty = createOrderDto.products.find(item => item.productId === productId).qty
@@ -63,8 +62,12 @@ export class OrdersService {
     let payment = new Payment()
     payment.paymentId = createOrderDto.paymentId
 
+    let cashier = new Cashier()
+    cashier.cashierId = 3
+
     const newOrder = this.orderRepository.create({
       payment,
+      cashier,
       totalPaid: createOrderDto.totalPaid
     })
 

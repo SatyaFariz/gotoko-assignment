@@ -1,5 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, CreateDateColumn, UpdateDateColumn } from "typeorm"
 import { Payment } from '../../payments/entities/payment.entity'
+import { Cashier } from '../../cashiers/entities/cashier.entity'
+
 
 @Entity()
 export class Order {
@@ -16,6 +18,10 @@ export class Order {
   @ManyToOne(() => Payment)
   @JoinColumn()
   payment: Payment
+
+  @ManyToOne(() => Cashier)
+  @JoinColumn()
+  cashier: Cashier
 
   @CreateDateColumn({ select: false })
   createdAt: Date;
