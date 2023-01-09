@@ -9,7 +9,7 @@ import { Cashier } from '../cashiers/entities/cashier.entity';
 import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/orderitem.entity';
 import { Repository, In, DataSource } from 'typeorm';
-import { Discount } from 'src/products/entities/discount.entity';
+import { Discount } from '../products/entities/discount.entity';
 import { FindOrdersQueryParamsDto } from './dto/find-orders-query-params.dto'
 import { v4 as uuidv4 } from 'uuid';
 import * as moment from 'moment'
