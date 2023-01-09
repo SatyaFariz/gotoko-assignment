@@ -6,6 +6,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Payment } from './entities/payment.entity';
 import { Repository } from 'typeorm';
 import { HttpException } from '../classes'
+import generateCreateEmptyBodyErrorObject from '../helpers/generateCreateEmptyBodyErrorObject'
+import generateUpdateEmptyBodyErrorObject from '../helpers/generateUpdateEmptyBodyErrorObject'
 
 @Injectable()
 export class PaymentsService {
@@ -14,6 +16,11 @@ export class PaymentsService {
   constructor(@InjectRepository(Payment) private paymentRepository: Repository<Payment>) {}
 
   create(createPaymentDto: CreatePaymentDto) {
+    if(Object.keys(createPaymentDto).length === 0) {
+      const error = generateCreateEmptyBodyErrorObject(['name', 'type'])
+      throw new HttpException(error, 400)
+    }
+
     const newPayment = this.paymentRepository.create(createPaymentDto);
     return this.paymentRepository.save(newPayment);
   }
@@ -45,6 +52,11 @@ export class PaymentsService {
   }
 
   async update(id: number, updatePaymentDto: UpdatePaymentDto) {
+    if(Object.keys(updatePaymentDto).length === 0) {
+      const error = generateUpdateEmptyBodyErrorObject(['name', 'logo', 'type'])
+      throw new HttpException(error, 400)
+    }
+
     const result = await this.paymentRepository.update(id, updatePaymentDto);
     if(result.affected === 0) {
       throw new HttpException({ message: this.notFoundMessage }, 404);

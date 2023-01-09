@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsEnum, IsUrl, ValidateIf } from 'class-validator'
+import { IsNotEmpty, IsString, IsEnum, IsUrl, ValidateIf, IsOptional } from 'class-validator'
 import { PaymentType } from '../types'
 
 export class CreatePaymentDto {
@@ -10,6 +10,7 @@ export class CreatePaymentDto {
   @IsEnum(PaymentType)
   type: PaymentType
 
+  @IsOptional()
   @IsUrl()
   @ValidateIf((_, value) => value !== null)
   logo: string | null
