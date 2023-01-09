@@ -265,7 +265,40 @@ export class OrdersService {
       throw new HttpException(error, 400)
     }
 
-    console.log(subtotalDto)
+    const products = await this.productRepository.find({
+      relations: {
+        category: true,
+        discount: true
+      },
+      where: { productId: In(subtotalDto.map(i => i.productId ))}
+    })
+
+    const subtotals = products.map(product => {
+      const inputQty = subtotalDto.find(item => item.productId === product.productId).qty
+      const hasDiscount = product.discount && new Date(product.discount.expiredAt) > new Date()
+      const totalNormalPrice = inputQty * product.price
+      const totalFinalPrice = hasDiscount ? this.getFinalPrice(inputQty, product.price, product.discount) : totalNormalPrice
+
+      return {
+        productId: product.productId,
+        name: product.name,
+        stock: product.stock,
+        price: product.price,
+        image: product.image,
+        qty: inputQty,
+        totalNormalPrice,
+        totalFinalPrice,
+        discount: product.discount ? this.formatDiscount(product.discount, product.price) : null
+      }
+    })
+
+    return {
+      subtotal: subtotals.reduce((subtotal, currentItem) => {
+        subtotal = subtotal + currentItem.totalFinalPrice
+        return subtotal
+      }, 0),
+      products: subtotals
+    }
   }
 
   private getFinalPrice(orderQty: number, price: number, discount: Discount): number {
