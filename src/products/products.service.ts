@@ -173,7 +173,8 @@ export class ProductsService {
   }
 
   private format_PERCENT(qty: number, result: number, price): string {
-    const afterDiscount = price - (result / 1000 * price)
+    const totalPrice = price * qty
+    const afterDiscount = totalPrice - (result / 100 * totalPrice)
     if(qty === 1) {
       return `Discount ${result}% ${this.formatCurrency(afterDiscount)}`
     }

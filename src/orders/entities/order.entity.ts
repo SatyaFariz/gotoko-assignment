@@ -15,6 +15,15 @@ export class Order {
   @Column()
   totalPaid: number
 
+  @Column()
+  totalPrice: number
+
+  @Column()
+  totalReturn: number
+
+  @Column()
+  receiptId: string
+
   @ManyToOne(() => Payment)
   @JoinColumn()
   payment: Payment
