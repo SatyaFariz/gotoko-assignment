@@ -41,6 +41,11 @@ services:
       MYSQL_PASSWORD: ${DATABASE_PASSWORD}
       MYSQL_DATABASE: ${DATABASE_NAME}
 
+  redis:
+    image: redis:alpine
+    networks:
+      - setoko
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     environment:
