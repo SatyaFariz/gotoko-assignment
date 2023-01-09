@@ -1,6 +1,7 @@
 
-export default function generateCreateEmptyBodyErrorObject(fields: string[], message: string) {
-  return [{
+export default function generateCreateEmptyBodyErrorObject(fields: string[]): { error: object[], message: string } {
+  const message = `body ValidationError: "value" must contain at least one of [${fields.join(', ')}]`
+  const error = [{
     message,
     path: [],
     type: 'object.missing',
@@ -11,4 +12,6 @@ export default function generateCreateEmptyBodyErrorObject(fields: string[], mes
       value: {}
     }
   }]
+
+  return { error, message }
 }
