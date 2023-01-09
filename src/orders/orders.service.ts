@@ -13,6 +13,7 @@ import { Repository, In, DataSource } from 'typeorm';
 import { Discount } from 'src/products/entities/discount.entity';
 import { FindOrdersQueryParamsDto } from './dto/find-orders-query-params.dto'
 import { v4 as uuidv4 } from 'uuid';
+import * as moment from 'moment'
 
 @Injectable()
 export class OrdersService {
@@ -87,22 +88,24 @@ export class OrdersService {
       const savedOrder = await queryRunner.manager.save(newOrder);
       const orderItems = await Promise.all(createOrderDto.products.map(item => {
         const productData = products.find(product => product.productId === item.productId)
+        const hasDiscount = productData.discount && new Date(productData.discount.expiredAt) > new Date()
+
         const product = new Product()
         product.productId = item.productId
         const order = new Order()
         order.orderId = savedOrder.orderId
+
         const discount = new Discount()
-        discount.discountId = productData.discount.discountId
+        discount.discountId = productData.discount?.discountId
 
         const totalNormalPrice = item.qty * productData.price
-        const totalFinalPrice = this.getFinalPrice(item.qty, productData.price, productData.discount)
   
         const newItem = this.orderItemRepository.create({
-          discount,
+          discount: hasDiscount ? discount : undefined,
           product,
           order,
           qty: item.qty,
-          totalFinalPrice,
+          totalFinalPrice: hasDiscount ? this.getFinalPrice(item.qty, productData.price, productData.discount) : totalNormalPrice,
           totalNormalPrice,
           unitPrice: productData.price
         })
@@ -174,10 +177,6 @@ export class OrdersService {
       }
     });
 
-    const queryRunner = this.dataSource.createQueryRunner();
-
-    await queryRunner.connect();
-
     const orderItems = await this.orderItemRepository.find({
       where: {
         orderOrderId: id
@@ -193,7 +192,18 @@ export class OrdersService {
       
     return {
       order: this.reformatOrder(order),
-      products: orderItems
+      products: orderItems.map(item => {
+        return {
+          productId: item.product.productId,
+          name: item.product.name,
+          discountsId: item.discount ? item.discount.discountId : null,
+          qty: item.qty,
+          price: item.product.price,
+          totalFinalPrice: item.totalFinalPrice,
+          totalNormalPrice: item.totalNormalPrice,
+          discount: item.discount ? this.formatDiscount(item.discount, item.product.price) : null
+        }
+      })
     }
   }
 
@@ -248,5 +258,46 @@ export class OrdersService {
       payment: undefined,
       isDownload: undefined
     };
+  }
+
+  private format_BUY_N(qty: number, result: number): string {
+    if(qty === 1) {
+      return `Only ${this.formatCurrency(result)}`
+    }
+
+    return `Buy ${qty} only ${this.formatCurrency(result)}`
+  }
+
+  private formatCurrency(price: number) {
+    return new Intl.NumberFormat(
+      'id-ID', 
+      { 
+        style: 'currency', 
+        currency: 'IDR'
+      }
+    )
+    .format(price).replace('IDR', 'Rp.')
+    .replace('.00', '')
+    .replace(/,/g, '.')
+  }
+
+  private format_PERCENT(qty: number, result: number, price): string {
+    const totalPrice = price * qty
+    const afterDiscount = totalPrice - (result / 100 * totalPrice)
+    if(qty === 1) {
+      return `Discount ${result}% ${this.formatCurrency(afterDiscount)}`
+    }
+
+    return `Buy ${qty} discount ${result}% ${this.formatCurrency(afterDiscount)}`
+  }
+
+  private formatDiscount(discount: Discount, price: number) {
+    const { qty, result } = discount
+    const clone = {
+      ...discount,
+      stringFormat: discount.type === 'BUY_N' ? this.format_BUY_N(qty, result) : this.format_PERCENT(qty, result, price),
+      expiredAtFormat: moment(new Date(discount.expiredAt)).format('DD MMM YYYY')
+    }
+    return clone
   }
 }
