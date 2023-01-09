@@ -119,6 +119,7 @@ export class OrdersService {
         return total
       }, 0)
 
+      // update total price and total return
       await queryRunner.manager.update(Order, savedOrder.orderId, { totalPrice, totalReturn: savedOrder.totalPaid - totalPrice })
 
       await queryRunner.commitTransaction();
