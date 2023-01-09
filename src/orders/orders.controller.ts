@@ -1,8 +1,11 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, ParseIntPipe, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, ParseIntPipe, Query, ParseArrayPipe } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { FindOrdersQueryParamsDto } from './dto/find-orders-query-params.dto'
+import { GetSubtotalDto } from './dto/get-subtotal.dto'
+import generateInvalidFieldsErrorObject from '../helpers/generateInvalidFieldsErrorObject'
+import { HttpException } from '../classes';
 
 @Controller('orders')
 export class OrdersController {
@@ -11,6 +14,16 @@ export class OrdersController {
   @Post()
   create(@Body() createOrderDto: CreateOrderDto) {
     return this.ordersService.create(createOrderDto);
+  }
+
+  @Post('subtotal')
+  calculateSubtotal(
+    @Body(new ParseArrayPipe({ items: GetSubtotalDto, whitelist: true, exceptionFactory: (errors) => {
+      const error = generateInvalidFieldsErrorObject(errors)
+      throw new HttpException(error, 400)
+    }})
+  ) subtotalDto: GetSubtotalDto[]) {
+    return this.ordersService.calculateSubtotal(subtotalDto);
   }
 
   @Get()

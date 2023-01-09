@@ -14,6 +14,7 @@ import { Discount } from 'src/products/entities/discount.entity';
 import { FindOrdersQueryParamsDto } from './dto/find-orders-query-params.dto'
 import { v4 as uuidv4 } from 'uuid';
 import * as moment from 'moment'
+import { GetSubtotalDto } from './dto/get-subtotal.dto'
 
 @Injectable()
 export class OrdersService {
@@ -242,6 +243,29 @@ export class OrdersService {
 
   remove(id: number) {
     return `This action removes a #${id} order`;
+  }
+
+  async calculateSubtotal(subtotalDto: GetSubtotalDto[]) {
+    if(!Array.isArray(subtotalDto) || subtotalDto?.length === 0) {
+      const error = {
+        message: "body ValidationError: \"value\" must be an array",
+        error: [
+          {
+            "message": "\"value\" must be an array",
+            "path": [],
+            "type": "array.base",
+            "context": {
+              "label": "value",
+              "value": {}
+            }
+          }
+        ]
+      }
+
+      throw new HttpException(error, 400)
+    }
+
+    console.log(subtotalDto)
   }
 
   private getFinalPrice(orderQty: number, price: number, discount: Discount): number {
