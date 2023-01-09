@@ -12,6 +12,9 @@ export class OrderItem {
   qty: number
 
   @Column()
+  unitPrice: number
+
+  @Column()
   totalNormalPrice: number
 
   @Column()

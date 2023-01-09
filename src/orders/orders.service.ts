@@ -96,7 +96,8 @@ export class OrdersService {
           order,
           qty: item.qty,
           totalFinalPrice,
-          totalNormalPrice
+          totalNormalPrice,
+          unitPrice: productData.price
         })
   
         return queryRunner.manager.save(newItem)
