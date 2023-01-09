@@ -14,6 +14,8 @@ import { Discount } from 'src/products/entities/discount.entity';
 
 @Injectable()
 export class OrdersService {
+  private notFoundMessage: string = 'Order Not Found';
+
   constructor(
     @InjectRepository(Order) private orderRepository: Repository<Order>,
     @InjectRepository(Product) private productRepository: Repository<Product>,
@@ -123,8 +125,34 @@ export class OrdersService {
     return `This action returns all orders`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
+  async findOne(id: number) {
+    const order = await this.orderRepository.findOne({
+      where: { orderId: id },
+      relations: {
+        cashier: true,
+        payment: true
+      }
+    });
+
+    if(!order)
+      throw new HttpException({ message: this.notFoundMessage }, 404);
+      
+    return {
+      ...order,
+      cashiersId: order.cashier.cashierId,
+      paymentTypesId: order.payment.paymentId,
+      cashier: {
+        ...order.cashier,
+        passcode: undefined
+      },
+      payment_type: {
+        ...order.payment,
+        paymentTypeId: order.payment.paymentId,
+        paymentId: undefined
+      },
+      payment: undefined,
+      isDownload: undefined
+    };
   }
 
   update(id: number, updateOrderDto: UpdateOrderDto) {
