@@ -8,11 +8,12 @@ import { ProductsModule } from './products/products.module';
 import { CategoriesModule } from './categories/categories.module';
 import { CashiersModule } from './cashiers/cashiers.module';
 import { PaymentsModule } from './payments/payments.module';
+import { OrdersModule } from './orders/orders.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(dataSourceOptions), 
-    UserModule, ProductsModule, CategoriesModule, CashiersModule, PaymentsModule
+    UserModule, ProductsModule, CategoriesModule, CashiersModule, PaymentsModule, OrdersModule
   ],
   controllers: [AppController],
   providers: [AppService],
