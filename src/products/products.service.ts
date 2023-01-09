@@ -129,7 +129,7 @@ export class ProductsService {
 
   async update(id: number, updateProductDto: UpdateProductDto) {
     if(Object.keys(updateProductDto).length === 0) {
-      const error = generateCreateEmptyBodyErrorObject(['categoryId', 'name', 'image', 'price', 'stock',])
+      const error = generateUpdateEmptyBodyErrorObject(['categoryId', 'name', 'image', 'price', 'stock',])
       throw new HttpException(error, 400)
     }
     let category = new Category()
