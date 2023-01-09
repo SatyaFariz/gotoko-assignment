@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsUrl, IsInt, IsNumber, IsEnum, IsOptional, ValidateNested } from 'class-validator'
+import { IsNotEmpty, IsString, IsUrl, IsInt, IsNumber, IsEnum, IsOptional, ValidateNested, Min } from 'class-validator'
 import { DiscountType } from '../types'
 import { Type, Transform } from 'class-transformer'
 import { IsExpiryDate } from '../decorators/IsExpiryDate'
@@ -6,10 +6,12 @@ import { IsExpiryDate } from '../decorators/IsExpiryDate'
 class DiscountDto {
   @IsNotEmpty()
   @IsInt()
+  @Min(1)
   qty: number
 
   @IsNotEmpty()
   @IsNumber()
+  @Min(0)
   result: number
 
   @IsNotEmpty()

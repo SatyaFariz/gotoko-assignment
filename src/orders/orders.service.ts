@@ -9,6 +9,7 @@ import { Product } from '../products/entities/product.entity';
 import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/orderitem.entity';
 import { Repository, In, DataSource } from 'typeorm';
+import { Discount } from 'src/products/entities/discount.entity';
 
 @Injectable()
 export class OrdersService {
@@ -129,5 +130,26 @@ export class OrdersService {
 
   remove(id: number) {
     return `This action removes a #${id} order`;
+  }
+
+  private getFinalPrice(orderQty: number, price: number, discount: Discount): number {
+    if(discount.type === 'PERCENT') {
+      if(orderQty >= discount.qty) {
+        const numberOfDiscountedProducts = orderQty - (orderQty % discount.qty)
+        const multiplyBy = numberOfDiscountedProducts / discount.qty
+
+        let finalPrice = 0
+        for(let i = 0; i < multiplyBy; i++) {
+          const totalPrice = price * discount.qty
+          const totalPriceAfterDiscount = totalPrice - (discount.result / 100 * totalPrice)
+
+          finalPrice = finalPrice + totalPriceAfterDiscount
+        }
+
+        return finalPrice
+      }
+    }
+
+    return 0
   }
 }
