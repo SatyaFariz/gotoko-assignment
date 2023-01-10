@@ -8,7 +8,7 @@ const JWTR =  require('jwt-redis').default
     {
       provide: 'REDIS_OPTIONS',
       useValue: {
-        url: 'redis://redis:6379'
+        url: 'redis://localhost:6379'
       }
     },
     {

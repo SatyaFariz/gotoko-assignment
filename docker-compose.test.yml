@@ -5,7 +5,7 @@ services:
     image: satyafariz/gotoko-test:latest
     container_name: gotoko-test_app
     restart: unless-stopped
-    command: "chmod +x /usr/src/app/run.sh && /usr/src/app/run.sh"
+    # command: "chmod +x /usr/src/app/run.sh && /usr/src/app/run.sh"
     ports:
       - 3030:3030
     networks:
