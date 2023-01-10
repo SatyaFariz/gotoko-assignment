@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { CreateCashierDto } from './dto/create-cashier.dto';
 import { UpdateCashierDto } from './dto/update-cashier.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -15,7 +15,10 @@ import generateUpdateEmptyBodyErrorObject from '../helpers/generateUpdateEmptyBo
 export class CashiersService {
   private notFoundMessage: string = 'Cashier Not Found';
 
-  constructor(@InjectRepository(Cashier) private cashierRepository: Repository<Cashier>) {}
+  constructor(
+    @Inject('JWT_REDIS') private readonly jwtRedis,
+    @InjectRepository(Cashier) private cashierRepository: Repository<Cashier>
+  ) {}
   
   create(createCashierDto: CreateCashierDto) {
     if(Object.keys(createCashierDto).length === 0) {
@@ -92,9 +95,9 @@ export class CashiersService {
   async login(id: number, authDto: AuthDto) {
     const access_secret = 'highly_confidential'
     const cashier = await this.getPasscode(id)
-
+    
     if(authDto.passcode === cashier?.passcode) {
-      const token = sign({ cashierId: id }, access_secret)
+      const token = await this.jwtRedis.sign({ cashierId: id }, access_secret)
       return {
         token
       }
