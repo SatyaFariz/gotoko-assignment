@@ -6,7 +6,6 @@ import { FindCashiersQueryParamsDto } from './dto/find-cashiers-query-params.dto
 import { Cashier } from './entities/cashier.entity';
 import { Repository } from 'typeorm';
 import { AuthDto } from './dto/auth.dto';
-import { sign } from 'jsonwebtoken'
 import { HttpException } from '../classes'
 import generateCreateEmptyBodyErrorObject from '../helpers/generateCreateEmptyBodyErrorObject'
 import generateUpdateEmptyBodyErrorObject from '../helpers/generateUpdateEmptyBodyErrorObject'
@@ -93,6 +92,11 @@ export class CashiersService {
   }
 
   async login(id: number, authDto: AuthDto) {
+    if(Object.keys(authDto).length === 0) {
+      const error = generateCreateEmptyBodyErrorObject(['passcode'])
+      throw new HttpException(error, 400)
+    }
+
     const access_secret = 'highly_confidentia'
     const cashier = await this.getPasscode(id)
 
@@ -101,6 +105,12 @@ export class CashiersService {
       return {
         token
       }
+    } else {
+      const error = {
+        message: "Passcode Not Match",
+        error: {}
+      }
+      throw new HttpException(error, 401)
     }
   }
 }

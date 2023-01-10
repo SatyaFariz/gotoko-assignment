@@ -1,4 +1,5 @@
 import { Injectable, CanActivate, ExecutionContext, Inject } from '@nestjs/common';
+import { HttpException } from '../classes'
 
 @Injectable()
 export default class AuthGuard implements CanActivate {
@@ -9,16 +10,22 @@ export default class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest()
     const bearerToken = request.headers.authorization
     const jwtToken = bearerToken.slice(7, bearerToken.length)
-    console.log('jwtToken', jwtToken)
+    const error = {
+      message: "Unauthorized",
+      error: {}
+    }
+
     try {
       const data = await this.jwtRedis.verify(jwtToken, 'highly_confidentia')
-      console.log('data nya',data)
-      return data !== null
+
+      if(!data) {
+        throw new HttpException(error, 401)
+      }
+
+      return true
 
     } catch(e) {
-      console.log(e)
-      return false
+      throw new HttpException(error, 401)
     }
-    
   }
 }
