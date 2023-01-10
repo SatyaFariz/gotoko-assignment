@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import generateCreateEmptyBodyErrorObject from '../helpers/generateCreateEmptyBodyErrorObject'
 import { HttpException } from '../classes'
@@ -22,16 +22,29 @@ export class OrdersService {
   private notFoundMessage: string = 'Order Not Found';
 
   constructor(
+    @Inject('JWT_REDIS') private readonly jwtRedis,
     @InjectRepository(Order) private orderRepository: Repository<Order>,
     @InjectRepository(Product) private productRepository: Repository<Product>,
     @InjectRepository(OrderItem) private orderItemRepository: Repository<OrderItem>,
     private dataSource: DataSource
   ) {}
 
-  async create(createOrderDto: CreateOrderDto) {
+  async create(createOrderDto: CreateOrderDto, headers: any) {
     if(Object.keys(createOrderDto).length === 0) {
       const error = generateCreateEmptyBodyErrorObject(['paymentId', 'totalPaid', 'products'])
       throw new HttpException(error, 400)
+    }
+
+    let cashierId = null
+
+    try {
+      const bearerToken = headers.authorization
+      const jwtToken = bearerToken?.slice(7, bearerToken.length)
+
+      const userData = await this.jwtRedis.verify(jwtToken, 'highly_confidentia')
+      cashierId = userData?.cashierId
+    } catch (error) {
+      
     }
 
     const errors = []
@@ -66,7 +79,6 @@ export class OrdersService {
       throw new HttpException(error, 500)
     }
 
-    const cashierId = 3
     let payment = new Payment()
     payment.paymentId = createOrderDto.paymentId
 

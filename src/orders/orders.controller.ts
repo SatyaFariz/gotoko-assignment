@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, ParseIntPipe, Query, ParseArrayPipe, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, ParseIntPipe, Query, ParseArrayPipe, Res, UseGuards, Headers } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { FindOrdersQueryParamsDto } from './dto/find-orders-query-params.dto'
@@ -13,8 +13,8 @@ export class OrdersController {
 
   @UseGuards(AuthGuard)
   @Post()
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.ordersService.create(createOrderDto);
+  create(@Body() createOrderDto: CreateOrderDto, @Headers() headers: object) {
+    return this.ordersService.create(createOrderDto, headers);
   }
 
   @UseGuards(AuthGuard)
