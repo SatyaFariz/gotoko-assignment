@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { RevenuesService } from './revenues.service';
 import { CreateRevenueDto } from './dto/create-revenue.dto';
 import { UpdateRevenueDto } from './dto/update-revenue.dto';
+import AuthGuard from '../guards/auth-guard';
 
 @Controller('revenues')
 export class RevenuesController {
@@ -12,6 +13,7 @@ export class RevenuesController {
     return this.revenuesService.create(createRevenueDto);
   }
 
+  @UseGuards(AuthGuard)
   @Get()
   findAll() {
     return this.revenuesService.findAll();
