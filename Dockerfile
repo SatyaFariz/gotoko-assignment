@@ -1,6 +1,6 @@
 FROM node
 
-EXPOSE 3000
+EXPOSE 3030
 
 WORKDIR /usr/src/app
 
