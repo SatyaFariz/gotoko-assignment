@@ -9,7 +9,7 @@ export default class AuthGuard implements CanActivate {
   ): Promise<boolean> {
     const request = context.switchToHttp().getRequest()
     const bearerToken = request.headers.authorization
-    const jwtToken = bearerToken.slice(7, bearerToken.length)
+    const jwtToken = bearerToken?.slice(7, bearerToken.length)
     const error = {
       message: "Unauthorized",
       error: {}
