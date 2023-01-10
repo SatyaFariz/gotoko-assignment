@@ -9,7 +9,7 @@ services:
     ports:
       - 3030:3030
     networks:
-      - gotoko-test
+      - gotoko
     environment:
       MYSQL_HOST: db
       MYSQL_PORT: 3306
@@ -22,19 +22,19 @@ services:
   db:
     container_name: gotoko-test_db
     restart: unless-stopped
-    volumes:
-      - gotoko-data-test:/var/lib/mysql
+    # volumes:
+    #   - gotoko-data-test:/var/lib/mysql
     ports:
       - 3306:3306
     networks:
-      - gotoko-test
+      - gotoko
     image: mysql:8.0.15
     command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DBNAME}
+      MYSQL_USER: admin
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: app
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -45,12 +45,12 @@ services:
     ports:
       - 8081:80
     networks:
-      - gotoko-test
+      - gotoko
 
 volumes:
   gotoko-data-test:
 
 networks:
-  gotoko-test:
-    name: gotoko-test
+  gotoko:
+    name: gotoko
     driver: bridge
