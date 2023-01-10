@@ -16,6 +16,7 @@ import * as moment from 'moment'
 import { GetSubtotalDto } from './dto/get-subtotal.dto'
 import { createReadStream } from 'fs';
 import { join } from 'path';
+import { JWT_SECRET } from '../constants'
 
 @Injectable()
 export class OrdersService {
@@ -41,7 +42,7 @@ export class OrdersService {
       const bearerToken = headers.authorization
       const jwtToken = bearerToken?.slice(7, bearerToken.length)
 
-      const userData = await this.jwtRedis.verify(jwtToken, 'highly_confidentia')
+      const userData = await this.jwtRedis.verify(jwtToken, JWT_SECRET)
       cashierId = userData?.cashierId
     } catch (error) {
       

@@ -1,5 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext, Inject } from '@nestjs/common';
 import { HttpException } from '../classes'
+import { JWT_SECRET } from '../constants'
 
 @Injectable()
 export default class AuthGuard implements CanActivate {
@@ -16,7 +17,7 @@ export default class AuthGuard implements CanActivate {
     }
 
     try {
-      const data = await this.jwtRedis.verify(jwtToken, 'highly_confidentia')
+      const data = await this.jwtRedis.verify(jwtToken, JWT_SECRET)
 
       if(!data) {
         throw new HttpException(error, 401)

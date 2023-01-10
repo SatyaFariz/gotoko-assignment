@@ -9,6 +9,7 @@ import { AuthDto } from './dto/auth.dto';
 import { HttpException } from '../classes'
 import generateCreateEmptyBodyErrorObject from '../helpers/generateCreateEmptyBodyErrorObject'
 import generateUpdateEmptyBodyErrorObject from '../helpers/generateUpdateEmptyBodyErrorObject'
+import { JWT_SECRET } from '../constants'
 
 @Injectable()
 export class CashiersService {
@@ -97,11 +98,10 @@ export class CashiersService {
       throw new HttpException(error, 400)
     }
 
-    const access_secret = 'highly_confidentia'
     const cashier = await this.getPasscode(id)
 
     if(authDto.passcode === cashier?.passcode) {
-      const token = await this.jwtRedis.sign({ cashierId: id }, access_secret)
+      const token = await this.jwtRedis.sign({ cashierId: id }, JWT_SECRET)
       return {
         token
       }
