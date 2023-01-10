@@ -2,17 +2,14 @@ version: '3'
 
 services:
   app:
-    build: .
-    container_name: setoko_app
+    image: satyafariz/gotoko-test:latest
+    container_name: gotoko-test_app
     restart: unless-stopped
-    command: npm run migration:run && npm run start:dev
+    command: "chmod +x /usr/src/app/run.sh && /usr/src/app/run.sh"
     ports:
       - 3030:3030
     networks:
-      - setoko
-    volumes:
-      - ./:/usr/src/app
-      # - /opt/app/node_modules/
+      - gotoko-test
     environment:
       MYSQL_HOST: db
       MYSQL_PORT: 3306
@@ -23,14 +20,14 @@ services:
       - db
 
   db:
-    container_name: setoko_db
+    container_name: gotoko-test_db
     restart: unless-stopped
     volumes:
-      - setoko-data:/var/lib/mysql
+      - gotoko-data-test:/var/lib/mysql
     ports:
       - 3306:3306
     networks:
-      - setoko
+      - gotoko-test
     image: mysql:8.0.15
     command: --default-authentication-plugin=mysql_native_password
     environment:
@@ -38,11 +35,6 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DBNAME}
-
-  redis:
-    image: redis:alpine
-    networks:
-      - setoko
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -53,12 +45,12 @@ services:
     ports:
       - 8081:80
     networks:
-      - setoko
+      - gotoko-test
 
 volumes:
-  setoko-data:
+  gotoko-data-test:
 
 networks:
-  setoko:
-    name: setoko
+  gotoko-test:
+    name: gotoko-test
     driver: bridge

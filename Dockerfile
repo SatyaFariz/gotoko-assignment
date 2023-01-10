@@ -1,13 +1,13 @@
 FROM node
 
-EXPOSE 3030
-
 WORKDIR /usr/src/app
 
 COPY package.json package.json
 
-RUN npm install
+RUN apt update && apt upgrade -y && apt install redis-server -y && npm install
 
 COPY . .
 
-CMD ["npm", "run", "start:dev"]
+EXPOSE 3030
+
+CMD ["/bin/bash", "-c", "chmod +x run.sh && ./run.sh"]

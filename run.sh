@@ -1,0 +1,1 @@
+redis-server --daemonize yes && npm run migration:run && npm run build && npm run start
