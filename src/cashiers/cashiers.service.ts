@@ -93,9 +93,9 @@ export class CashiersService {
   }
 
   async login(id: number, authDto: AuthDto) {
-    const access_secret = 'highly_confidential'
+    const access_secret = 'highly_confidentia'
     const cashier = await this.getPasscode(id)
-    
+
     if(authDto.passcode === cashier?.passcode) {
       const token = await this.jwtRedis.sign({ cashierId: id }, access_secret)
       return {

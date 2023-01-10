@@ -1,7 +1,8 @@
 import * as redis from 'redis'
-import { Module } from '@nestjs/common';
+import { Module, Global } from '@nestjs/common';
 const JWTR =  require('jwt-redis').default
 
+@Global()
 @Module({
   providers: [
     {
@@ -17,8 +18,7 @@ const JWTR =  require('jwt-redis').default
         const client = redis.createClient(options);
         await client.connect();
         const jwtr = new JWTR(client);
-        return jwtr;
-        return client
+        return jwtr
       }
     }
   ],
