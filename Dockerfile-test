@@ -1,0 +1,28 @@
+FROM ubuntu/mysql:latest
+
+ENV MYSQL_HOST=localhost
+ENV MYSQL_PORT=3306
+ENV MYSQL_USER=admin
+ENV MYSQL_PASSWORD=password
+ENV MYSQL_DBNAME=app
+
+ENV MYSQL_DATABASE=$MYSQL_DBNAME
+ENV MYSQL_ROOT_PASSWORD=$MYSQL_PASSWORD
+
+RUN apt update \
+    && apt upgrade -y \
+    && apt install curl -y \
+    && curl -s https://deb.nodesource.com/setup_14.x | bash \
+    && apt install redis-server nodejs -y
+
+WORKDIR /usr/src/app
+
+COPY package.json package.json
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 3030
+
+CMD ["/bin/bash", "-c", "chmod +x run.sh && ./run.sh"]
